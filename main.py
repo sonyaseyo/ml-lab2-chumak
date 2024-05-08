@@ -20,7 +20,7 @@ print(class_counts)
 
 # -------------------- 3
 # a. Обчислення метрик для кожної моделі при різних значеннях порогу
-def compute_metrics(data, threshold_step=0.2):
+def compute_metrics(data, threshold_step=0.1):
     metrics = {}
 
     for model in data.columns[1:]:
