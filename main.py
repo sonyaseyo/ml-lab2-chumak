@@ -23,19 +23,15 @@ os.makedirs(output_dir, exist_ok=True)
 file_path = 'KM-12-3.csv'
 data = pd.read_csv(file_path)
 print(data.head())
-actual_values = data['GT']
-model1_probs = data['Model_1_0']
-model2_probs = data['Model_2_1']
 
 # -------------------- 2
-class_counts = actual_values.value_counts()
 print("\nКількість об’єктів кожного класу:")
-print(class_counts)
+print(data['GT'].value_counts())
 
 data['Model_1_1'] = abs(data['Model_1_0'] - 1)
 data['Model_2_0'] = abs(data['Model_2_1'] - 1)
-df = data.reindex(columns=sorted(data.columns))
-df
+data = data.reindex(columns=sorted(data.columns))
+data
 
 # -------------------- 3
 threshold = np.linspace(-epsilon, 1 + epsilon, int(1 / epsilon))
@@ -123,6 +119,7 @@ def viz_metrics(model_1, model_2):
         plt.title(model['name'])
         plt.legend()
         plt.savefig(f"{output_dir}/{model['name']}_metrics.png")
+        plt.show()
         plt.close()
 
 viz_metrics(model_1, model_2)
@@ -184,12 +181,14 @@ def plot_model(model, metric_threshold):
 
     plt.tight_layout()
     plt.savefig(f"{output_dir}/{name}_model_plot.png")
+    plt.show()
     plt.close()
 
 plot_model(model_1, 0.95)
 plot_model(model_2, 0.95)
 
 def plot_prc(model_1, model_2):
+    global opt
     for mod in (model_1, model_2):
         name, model = mod['name'], mod['model']
         precision, recall = model['precision'], model['recall']
@@ -210,6 +209,7 @@ def plot_prc(model_1, model_2):
         plt.title(f'Precision-Recall Curve for {name}')
         plt.legend()
         plt.savefig(f"{output_dir}/{name}_prc_curve.png")
+        plt.show()
         plt.close()
         print(f'{name} PRC-AUC: {roundf(auc(recall, precision))}')
 
@@ -234,6 +234,7 @@ def plot_roc(model_1, model_2):
         plt.title(f'ROC-curve for {name}')
         plt.legend()
         plt.savefig(f"{output_dir}/{name}_roc_curve.png")
+        plt.show()
         plt.close()
         print(f'{name} ROC-AUC: {roundf(auc(FPR, TPR))}')
 
